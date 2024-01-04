@@ -1,36 +1,15 @@
-/*
- *  linux/drivers/cpufreq/cpufreq_hatsune.c
- *
- *  Copyright (C)  2001 Russell King
- *            (C)  2002 - 2004 Dominik Brodowski <linux@brodo.de>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- *
- */
-
-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-
 #include <linux/cpufreq.h>
 #include <linux/init.h>
 #include <linux/module.h>
-#include <linux/mm.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
+#include <linux/kernel.h>  // Tambahkan header ini
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 static DEFINE_PER_CPU(unsigned int, cpu_is_managed);
 static DEFINE_MUTEX(userspace_mutex);
 
-/**
- * cpufreq_set - set the CPU frequency
- * @policy: pointer to policy struct where freq is being set
- * @freq: target frequency in kHz
- *
- * Sets the CPU frequency to freq.
- */
 static int cpufreq_set(struct cpufreq_policy *policy, unsigned int freq)
 {
     int ret = -EINVAL;
@@ -44,7 +23,6 @@ static int cpufreq_set(struct cpufreq_policy *policy, unsigned int freq)
 
     *setspeed = freq;
 
-    // Clear RAM dan cache
     pr_info("Clearing RAM and cache...\n");
     sync();
     drop_caches();
@@ -108,17 +86,17 @@ static void cpufreq_userspace_policy_stop(struct cpufreq_policy *policy)
     mutex_unlock(&userspace_mutex);
 }
 
-static int __init cpufreq_gov_hatsune_init(void)
+static int my_init_function(void)
 {
     return cpufreq_register_governor(&cpufreq_gov_hatsune_init);
 }
 
-static void __exit cpufreq_gov_hatsune_exit(void)
+static void my_exit_function(void)
 {
     cpufreq_unregister_governor(&cpufreq_gov_hatsune_init);
 }
 
-MODULE_AUTHOR("Frostleaft07 <zx7unknow@gmail.com>, ");
+MODULE_AUTHOR("Frostleaft07 <zx7unknow@gmail.com>");
 MODULE_DESCRIPTION("CPUfreq policy governor 'hatsune' (Clear RAM and Cache)");
 MODULE_LICENSE("GPL");
 
@@ -127,9 +105,9 @@ struct cpufreq_governor *cpufreq_default_governor(void)
 {
     return &cpufreq_gov_hatsune;
 }
-
-fs_initcall(cpufreq_gov_hatsune_init);
+fs_initcall(my_init_function);
 #else
-module_init(cpufreq_gov_hatsune_init);
+module_init(my_init_function);
+module_exit(my_exit_function);
 #endif
-module_exit(cpufreq_gov_hatsune_exit);
+
