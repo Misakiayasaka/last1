@@ -21,16 +21,6 @@ static int cpufreq_set(struct cpufreq_policy *policy, unsigned int freq)
 
 	*setspeed = freq;
 
-	// Cache Killer
-	pr_info("Running cache killer...\n");
-	// Implement your cache killer logic here
-	pr_info("Cache killed\n");
-
-	// Clear RAM
-	pr_info("Clearing RAM...\n");
-	flush_cache_all();
-	pr_info("RAM cleared\n");
-
 	ret = __cpufreq_driver_target(policy, freq, CPUFREQ_RELATION_L);
  err:
 	mutex_unlock(&hatsune_mutex);
