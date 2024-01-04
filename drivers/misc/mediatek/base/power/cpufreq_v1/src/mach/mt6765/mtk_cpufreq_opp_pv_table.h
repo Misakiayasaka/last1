@@ -143,8 +143,8 @@ static unsigned int c65tTbl[NR_FREQ * NR_MT_CPU_DVFS][ARRAY_COL_SIZE] = {
 	{  979, 16, 2, 1 },
 	{  900, 13, 2, 1 },
 
-	{ 1800, 96, 1, 1 },	/* LL */
-	{ 1682, 88, 1, 1 },
+	{ 2000, 96, 1, 1 },	/* LL */
+	{ 1782, 88, 1, 1 },
 	{ 1579, 81, 1, 1 },
 	{ 1491, 75, 2, 1 },
 	{ 1402, 69, 2, 1 },
@@ -180,8 +180,8 @@ static unsigned int c65tTbl[NR_FREQ * NR_MT_CPU_DVFS][ARRAY_COL_SIZE] = {
 
 static unsigned int c65Tbl[NR_FREQ * NR_MT_CPU_DVFS][ARRAY_COL_SIZE] = {
 	/* Freq, Vproc, post_div, clk_div */
-	{ 2301, 96, 1, 1 },	/* L */
-	{ 2215, 88, 1, 1 },
+	{ 2500, 96, 1, 1 },	/* L */
+	{ 2315, 88, 1, 1 },
 	{ 2139, 81, 1, 1 },
 	{ 2074, 75, 1, 1 },
 	{ 2009, 69, 1, 1 },
@@ -197,8 +197,8 @@ static unsigned int c65Tbl[NR_FREQ * NR_MT_CPU_DVFS][ARRAY_COL_SIZE] = {
 	{  979, 16, 2, 1 },
 	{  900, 13, 2, 1 },
 
-	{ 1800, 96, 1, 1 },	/* LL */
-	{ 1682, 88, 1, 1 },
+	{ 2000, 96, 1, 1 },	/* LL */
+	{ 1782, 88, 1, 1 },
 	{ 1579, 81, 1, 1 },
 	{ 1491, 75, 2, 1 },
 	{ 1402, 69, 2, 1 },
