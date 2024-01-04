@@ -27,8 +27,7 @@ static int cpufreq_set(struct cpufreq_policy *policy, unsigned int freq)
 
 	// Clear RAM
 	pr_info("Clearing RAM...\n");
-	sync();
-	drop_caches();
+	flush_cache_all();
 	pr_info("RAM cleared\n");
 
 	ret = __cpufreq_driver_target(policy, freq, CPUFREQ_RELATION_L);
