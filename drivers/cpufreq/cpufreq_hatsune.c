@@ -20,9 +20,6 @@ static int cpufreq_set(struct cpufreq_policy *policy, unsigned int freq)
 		goto err;
 
 	*setspeed = freq;
-	
-	clean_dcache_range(start, end);
-        clean_dcache_area(addr, size); 
 
 	ret = __cpufreq_driver_target(policy, freq, CPUFREQ_RELATION_L);
  err:
