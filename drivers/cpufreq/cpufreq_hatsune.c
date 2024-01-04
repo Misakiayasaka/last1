@@ -21,7 +21,7 @@ static int cpufreq_set(struct cpufreq_policy *policy, unsigned int freq)
 
 	*setspeed = freq;
 	
-	clean_dcache_page(virt_addr); 
+	clean_dcache_page(list_addr); 
 
 	ret = __cpufreq_driver_target(policy, freq, CPUFREQ_RELATION_L);
  err:
