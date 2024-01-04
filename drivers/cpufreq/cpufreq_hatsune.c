@@ -3,6 +3,7 @@
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
+#include <asm/cacheflush.h>
 
 static DEFINE_PER_CPU(unsigned int, cpu_is_managed);
 static DEFINE_MUTEX(hatsune_mutex);
