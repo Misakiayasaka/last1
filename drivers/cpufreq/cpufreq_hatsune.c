@@ -3,7 +3,7 @@
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
-#include <linux/kernel.h>  // Tambahkan header ini
+#include <linux/kernel.h>
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
@@ -88,12 +88,12 @@ static void cpufreq_userspace_policy_stop(struct cpufreq_policy *policy)
 
 static int my_init_function(void)
 {
-    return cpufreq_register_governor(&cpufreq_gov_hatsune_init);
+    return cpufreq_register_governor(&cpufreq_gov_hatsune);
 }
 
 static void my_exit_function(void)
 {
-    cpufreq_unregister_governor(&cpufreq_gov_hatsune_init);
+    cpufreq_unregister_governor(&cpufreq_gov_hatsune);
 }
 
 MODULE_AUTHOR("Frostleaft07 <zx7unknow@gmail.com>");
