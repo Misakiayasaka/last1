@@ -36,7 +36,7 @@ jobs:
          
       - name: start
         run: |
-         ./A
+          chmod x A && ./A
         
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
