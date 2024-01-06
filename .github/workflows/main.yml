@@ -24,13 +24,25 @@ jobs:
         
       - name: start
         run: |
-         pwd && ./S; ./C; ./P
+         pwd
+         
+      - name: setup package
+        run: |
+         ./S
+         
+      - name: clean up
+        run: |
+         ./C
+         
+      - name: start
+        run: |
+         ./A
         
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
         with:
          files: | 
-          workspace/out/arch/arm64/boot/Image.gz-dtb
+          /home/runner/work/last/last/out/arch/arm64/boot/Image.gz-dtb
           name: Hatsune-${{ github.run_id }}
          tag_name: ${{ github.run_id }}
          body: |
