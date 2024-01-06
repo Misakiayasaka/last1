@@ -34,9 +34,9 @@ jobs:
         run: |
          ./C
          
-      - name: start
+      - name: clone clang
         run: |
-          sudo chmod +x A && ./A
+          git clone https://github.com/stormbreaker-project/stormbreaker-clang -b 12.x clang && ls && pwd
         
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
