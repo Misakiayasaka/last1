@@ -6,14 +6,14 @@ echo $KBUILD_BUILD_HOST
 echo -e "done?"
 sleep 2s
 
-make CC=clang ARCH=arm64 O=out hatsune_defconfig
-make CC=clang ARCH=arm64 O=out -j16 \
+make CC=$HOME/clang/bin/clang ARCH=arm64 O=out RMX2185_defconfig
+make CC=$HOME/clang/bin/clang ARCH=arm64 O=out -j16 \
         HEADER_ARCH=arm64 \
         SUBARCH=arm64 \
     AR=llvm-ar \
     NM=llvm-nm \
     OBJDUMP=llvm-objdump \
     STRIP=llvm-strip \
-      	CROSS_COMPILE=aarch64-linux-gnu- \
-	CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+      	CROSS_COMPILE=$HOME/clang/bin/aarch64-linux-gnu- \
+	CROSS_COMPILE_ARM32=$HOME/clang/bin/arm-linux-gnueabi- \
         CLANG_TRIPLE=aarch64-linux-gnu-
