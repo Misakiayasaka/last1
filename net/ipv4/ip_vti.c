@@ -674,8 +674,10 @@ static int __init vti_init(void)
 
 	msg = "ipip tunnel";
 	err = xfrm4_tunnel_register(&ipip_handler, AF_INET);
-	if (err < 0)
+	if (err < 0) {
+		pr_info("%s: cant't register tunnel\n",__func__);
 		goto xfrm_tunnel_failed;
+	}
 
 	msg = "netlink interface";
 	err = rtnl_link_register(&vti_link_ops);
