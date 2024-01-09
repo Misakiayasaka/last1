@@ -138,22 +138,22 @@ void (*statistic_dev_rtt)(struct sock *sk,long rtt) = NULL;
 EXPORT_SYMBOL(statistic_dev_rtt);
 //#endif /* VENDOR_EDIT */
 
-static void tcp_gro_dev_warn(struct sock *sk, const struct sk_buff *skb)
+static void tcp_gro_dev_warn(struct sock *sk, const struct sk_buff *skb, unsigned int len)
 {
-	static bool __once __read_mostly;
+    static bool __once __read_mostly;
 
-	if (!__once) {
-		struct net_device *dev;
+    if (!__once) {
+        struct net_device *dev;
 
-		__once = true;
+        __once = true;
 
-		rcu_read_lock();
-		dev = dev_get_by_index_rcu(sock_net(sk), skb->skb_iif);
-		if (!dev || len >= dev->mtu)
-			pr_warn("%s: Driver has suspect GRO implementation, TCP performance may be compromised.\n",
-				dev ? dev->name : "Unknown driver");
-		rcu_read_unlock();
-	}
+        rcu_read_lock();
+        dev = dev_get_by_index_rcu(sock_net(sk), skb->skb_iif);
+        if (!dev || len >= dev->mtu)
+            pr_warn("%s: Driver has suspect GRO implementation, TCP performance may be compromised.\n",
+                    dev ? dev->name : "Unknown driver");
+        rcu_read_unlock();
+    }
 }
 
 /* Adapt the MSS value used to make delayed ack decision to the
@@ -161,23 +161,21 @@ static void tcp_gro_dev_warn(struct sock *sk, const struct sk_buff *skb)
  */
 static void tcp_measure_rcv_mss(struct sock *sk, const struct sk_buff *skb)
 {
-	struct inet_connection_sock *icsk = inet_csk(sk);
-	const unsigned int lss = icsk->icsk_ack.last_seg_size;
-	unsigned int len;
+    struct inet_connection_sock *icsk = inet_csk(sk);
+    const unsigned int lss = icsk->icsk_ack.last_seg_size;
+    unsigned int len;
 
-	icsk->icsk_ack.last_seg_size = 0;
+    icsk->icsk_ack.last_seg_size = 0;
 
-	/* skb->len may jitter because of SACKs, even if peer
-	 * sends good full-sized frames.
-	 */
-	len = skb_shinfo(skb)->gso_size ? : skb->len;
-	if (len >= icsk->icsk_ack.rcv_mss) {
-		icsk->icsk_ack.rcv_mss = min_t(unsigned int, len,
-					       tcp_sk(sk)->advmss);
-		/* Account for possibly-removed options */
-		if (unlikely(len > icsk->icsk_ack.rcv_mss +
-				   MAX_TCP_OPTION_SPACE))
-			tcp_gro_dev_warn(sk, skb, len);
+    /* skb->len may jitter because of SACKs, even if peer
+     * sends good full-sized frames.
+     */
+    len = skb_shinfo(skb)->gso_size ? : skb->len;
+    if (len >= icsk->icsk_ack.rcv_mss) {
+        icsk->icsk_ack.rcv_mss = min_t(unsigned int, len, tcp_sk(sk)->advmss);
+        /* Account for possibly-removed options */
+        if (unlikely(len > icsk->icsk_ack.rcv_mss + MAX_TCP_OPTION_SPACE))
+            tcp_gro_dev_warn(sk, skb, len);
 	} else {
 		/* Otherwise, we make more careful check taking into account,
 		 * that SACKs block is variable.
