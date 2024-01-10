@@ -3843,22 +3843,10 @@ static void binder_transaction(struct binder_proc *proc,
 			return_error_line = __LINE__;
 			goto err_dead_binder;
 		}
-
-#if defined(VENDOR_EDIT) && defined(CONFIG_OPPO_HANS)
-// Kun.Zhou@ROM.Framework, 2019/09/23, add for hans freeze manager
-		if (!(tr->flags & TF_ONE_WAY) //report sync binder call
-			&& target_proc
-			&& (task_uid(target_proc->tsk).val > MIN_USERAPP_UID)
-			&& (proc->pid != target_proc->pid)
-			&& is_frozen_tg(target_proc->tsk)) {
-			hans_report(SYNC_BINDER, task_tgid_nr(proc->tsk), task_uid(target_proc->tsk).val, "SYNC_BINDER", -1);
+		if (WARN_ON(proc == target_proc)) {
+			return_error = BR_FAILED_REPLY;
+			goto err_invalid_target_handle;
 		}
-#endif
-
-		e->to_node = target_node->debug_id;
-#ifdef BINDER_WATCHDOG
-		strncpy(e->service, target_node->name, MAX_SERVICE_NAME_LEN-1);
-#endif
 		if (security_binder_transaction(proc->tsk,
 						target_proc->tsk) < 0) {
 			return_error = BR_FAILED_REPLY;
@@ -4493,6 +4481,7 @@ static int binder_thread_write(struct binder_proc *proc,
 				return -EFAULT;
 
 			ptr += sizeof(uint32_t);
+<<<<<<< HEAD
 			ret = -1;
 			if (increment && !target) {
 				struct binder_node *ctx_mgr_node;
@@ -4512,6 +4501,30 @@ static int binder_thread_write(struct binder_proc *proc,
 				binder_user_error("%d:%d tried to acquire reference to desc %d, got %d instead\n",
 					proc->pid, thread->pid,
 					target, rdata.desc);
+=======
+			if (target == 0 && binder_context_mgr_node &&
+			    (cmd == BC_INCREFS || cmd == BC_ACQUIRE)) {
+				if (binder_context_mgr_node->proc == proc) {
+					binder_user_error("%d:%d context manager tried to acquire desc 0\n",
+							  proc->pid, thread->pid);
+					return -EINVAL;
+				}
+				ref = binder_get_ref_for_node(proc,
+					       binder_context_mgr_node);
+				if (ref->desc != target) {
+					binder_user_error("%d:%d tried to acquire reference to desc 0, got %d instead\n",
+						proc->pid, thread->pid,
+						ref->desc);
+				}
+			} else
+				ref = binder_get_ref(proc, target,
+						     cmd == BC_ACQUIRE ||
+						     cmd == BC_RELEASE);
+			if (ref == NULL) {
+				binder_user_error("%d:%d refcount change on invalid ref %d\n",
+					proc->pid, thread->pid, target);
+				break;
+>>>>>>> 1e1a41a66f1b7c4c4523bb8d2145b34504436840
 			}
 			switch (cmd) {
 			case BC_INCREFS:
