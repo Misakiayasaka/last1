@@ -48,11 +48,6 @@ scm_version() {
 				echo "$atag" | awk -F- '{printf("-%05d", $(NF-1))}'
 			fi
 		fi
-
-		# Check for uncommitted changes.
-		if git diff-index --quiet HEAD --; then
-			echo "-dirty"
-		fi
 	fi
 }
 
