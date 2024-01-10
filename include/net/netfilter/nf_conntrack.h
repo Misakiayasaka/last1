@@ -103,7 +103,7 @@ struct nf_conn {
 	struct hlist_node	nat_bysource;
 #endif
 	/* all members below initialized via memset */
-	struct { } __nfct_init_offset;
+	u8 __nfct_init_offset[0];
 
 
 	//#ifdef VENDOR_EDIT
