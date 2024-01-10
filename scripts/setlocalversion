@@ -72,19 +72,6 @@ scm_version()
 			printf -- '-svn%s' "`git svn find-rev $head`"
 		fi
 
-		# Check for uncommitted changes.
-		# First, with git-status, but --no-optional-locks is only
-		# supported in git >= 2.14, so fall back to git-diff-index if
-		# it fails. Note that git-diff-index does not refresh the
-		# index, so it may give misleading results. See
-		# git-update-index(1), git-diff-index(1), and git-status(1).
-		if {
-			git --no-optional-locks status -uno --porcelain 2>/dev/null ||
-			git diff-index --name-only HEAD
-		} | grep -qvE '^(.. )?scripts/package'; then
-			printf '%s' -dirty
-		fi
-
 		# All done with git
 		return
 	fi
@@ -123,23 +110,6 @@ scm_version()
 	fi
 }
 
-collect_files()
-{
-	local file res
-
-	for file; do
-		case "$file" in
-		*\~*)
-			continue
-			;;
-		esac
-		if test -e "$file"; then
-			res="$res$(cat "$file")"
-		fi
-	done
-	echo "$res"
-}
-
 if $scm_only; then
 	if test ! -e .scmversion; then
 		res=$(scm_version)
@@ -156,27 +126,13 @@ else
 fi
 
 # localversion* files in the build and source directory
-res="$(collect_files localversion*)"
+res=""
 if test ! "$srctree" -ef .; then
-	res="$res$(collect_files "$srctree"/localversion*)"
+	res="$(collect_files "$srctree"/localversion*)"
 fi
 
 # CONFIG_LOCALVERSION and LOCALVERSION (if set)
 res="${res}${CONFIG_LOCALVERSION}${LOCALVERSION}"
 
 # scm version string if not at a tagged commit
-if test "$CONFIG_LOCALVERSION_AUTO" = "y"; then
-	# full scm version string
-	res="$res$(scm_version)"
-else
-	# append a plus sign if the repository is not in a clean
-	# annotated or signed tagged state (as git describe only
-	# looks at signed or annotated tags - git tag -a/-s) and
-	# LOCALVERSION= is not specified
-	if test "${LOCALVERSION+set}" != "set"; then
-		scm=$(scm_version --short)
-		res="$res${scm:++}"
-	fi
-fi
-
-echo "$res"
+if test "$CONFIG_LOCALVERSION_AUTO" = "y
