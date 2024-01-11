@@ -379,7 +379,7 @@ static int spi_st_probe(struct platform_device *pdev)
 	ret = devm_spi_register_master(&pdev->dev, master);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to register master\n");
-		goto clk_disable;
+		goto rpm_disable;
 	}
 
 	return 0;
